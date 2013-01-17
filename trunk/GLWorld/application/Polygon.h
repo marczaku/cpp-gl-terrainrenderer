@@ -4,6 +4,7 @@
 #include "Vertex.h"
 #include "Color.h"
 #include <gl/GL.h>
+extern GLint g_hW1,g_hW2,g_hW3,g_hW4;
 
 //CPolygon-Class (Compiler was bitching around, if I named it CPolygon, too lazy to find the error's source ;)
 class CPolygon
@@ -37,21 +38,10 @@ public:
 
 	int Draw(vertex* Vertices, bool bFilled, bool bDrawNormal=false)
 	{
-		/*
-		if(bDrawNormal)
-		{
-			glColor3ub(255,255,255);
-			glBegin( GL_LINES );
-			glVertex3d(center.wx,center.wy,center.wz);
-			glVertex3d(center.wx-n.wx/5,center.wy-n.wy/5,center.wz-n.wz/5);
-			glEnd();
-		}*/
-
 		if(bDrawNormal)
 		{
 			for(int i=0;i<Size;i++)
 			{
-				glColor3ub(255,255,255);
 				glBegin( GL_LINES );
 				glVertex3d(Vertices[Indices[i]].wx,Vertices[Indices[i]].wy,Vertices[Indices[i]].wz);
 				glVertex3d(Vertices[Indices[i]].wx-Vertices[Indices[i]].n.wx/25,Vertices[Indices[i]].wy-Vertices[Indices[i]].n.wy/25,Vertices[Indices[i]].wz-Vertices[Indices[i]].n.wz/25);
@@ -67,7 +57,10 @@ public:
 		{
 			glNormal3d(Vertices[Indices[i]].n.wx,Vertices[Indices[i]].n.wy,Vertices[Indices[i]].n.wz);
 			glMultiTexCoord2d(GL_TEXTURE0,Vertices[Indices[i]].u,Vertices[Indices[i]].v);
-			glMultiTexCoord2d(GL_TEXTURE1,Vertices[Indices[i]].u2,Vertices[Indices[i]].v2);
+			glVertexAttrib1f(g_hW1,Vertices[Indices[i]].w[0]);
+			glVertexAttrib1f(g_hW2,Vertices[Indices[i]].w[1]);
+			glVertexAttrib1f(g_hW3,Vertices[Indices[i]].w[2]);
+			glVertexAttrib1f(g_hW4,Vertices[Indices[i]].w[3]);
 			glColor3ub(Vertices[Indices[i]].col.r,Vertices[Indices[i]].col.g,Vertices[Indices[i]].col.b);
 			glVertex3d(Vertices[Indices[i]].wx,Vertices[Indices[i]].wy,Vertices[Indices[i]].wz);
 		}

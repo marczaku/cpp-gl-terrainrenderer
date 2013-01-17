@@ -133,6 +133,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="DominantDirectionalLight.h" />
     <ClInclude Include="Landscape.h" />
+    <ClInclude Include="Landscape4Tex.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="picture.h" />
     <ClInclude Include="Polyeder.h" />

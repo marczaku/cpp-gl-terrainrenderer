@@ -5,6 +5,27 @@
 #include <stdio.h>
 #include "screen_interface.h"
 
+void load_gl_texture(char* filename, GLenum texture, char* texname, GLuint prog)
+{
+	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+
+	picture surface( filename );
+
+	GLuint texture_id;
+	glActiveTexture(texture);
+	glGenTextures( 1, &texture_id );
+	glBindTexture( GL_TEXTURE_2D, texture_id );
+
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, surface.xsize, surface.ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.content );
+
+	GLint texture_location = glGetUniformLocation( prog, texname );
+    if( texture_location == -1 ) exit_error( "Variable konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+    glUniform1i( texture_location, texture );
+}
+
 char *load_file( char *filename )
 {
   FILE *input = fopen( filename, "rb" );

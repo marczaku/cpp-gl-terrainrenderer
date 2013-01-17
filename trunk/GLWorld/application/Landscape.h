@@ -106,8 +106,6 @@ public:
 				m_Verts[y*m_xSize+x].wz=(float)y/10;
 				m_Verts[y*m_xSize+x].u=(float)x/m_xSize*10;
 				m_Verts[y*m_xSize+x].v=(float)y/m_ySize*10;
-				m_Verts[y*m_xSize+x].u2=(float)x/m_xSize;
-				m_Verts[y*m_xSize+x].v2=(float)y/m_ySize;
 
 				m_Verts[y*m_xSize+x].wy=m_HeightMap.content[y*m_HeightMap.xsize+x].r+m_HeightMap.content[y*m_HeightMap.xsize+x].g+m_HeightMap.content[y*m_HeightMap.xsize+x].b;
 				int test=(int)(m_Verts[y*m_xSize+x].wy/LANDSCAPE_MAXHEIGHT*m_HeightTex.xsize);
