@@ -9,12 +9,24 @@ struct vertex
 {
 	GLdouble wx, wy, wz;
 	GLdouble u,v;
-	GLdouble u2,v2;
+	float w[4];
 	vector n;
 	Color col;
 
-	vertex( void ) : wx( 0 ), wy( 0 ), wz( 0 ) { }
-	vertex( GLdouble x, GLdouble y, GLdouble z ) : wx( x ), wy( y ), wz( z ) { }
+	vertex( void ) : wx( 0 ), wy( 0 ), wz( 0 )
+	{
+		w[0]=0;
+		w[1]=0;
+		w[2]=0;
+		w[3]=0;
+	}
+	vertex( GLdouble x, GLdouble y, GLdouble z ) : wx( x ), wy( y ), wz( z )
+	{
+		w[0]=0;
+		w[1]=0;
+		w[2]=0;
+		w[3]=0;
+	}
 
 	vertex& operator += (const vertex& v)        {wx+=v.wx; wy+=v.wy; wz+=v.wz; return *this;}
 	vertex& operator /= (const float f)        {wx/=f; wy/=f; wz/=f; return *this;}

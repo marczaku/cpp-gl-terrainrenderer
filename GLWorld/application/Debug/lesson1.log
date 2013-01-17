@@ -1,4 +1,4 @@
-﻿Build started 15.01.2013 15:33:18.
+﻿Build started 16.01.2013 14:32:10.
      1>Project "D:\GLWorld\application\lesson1.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating ".\Debug\lesson1.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -17,4 +17,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.05
+Time Elapsed 00:00:00.06

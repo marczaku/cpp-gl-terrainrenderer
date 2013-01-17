@@ -1,0 +1,28 @@
+﻿Build started 16.01.2013 15:55:21.
+     1>Project "c:\Users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\GLWorld\GLWorld.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld__Win32Release.pch" /Fo"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\\" /Fd"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld__Win32Release.pch" /Fo"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\\" /Fd"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt GLWorld.cpp
+         GLWorld.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld.res" GLWorld.rc 
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\bin\GLWorld__Win32Release.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld__Win32Release.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\bin\GLWorld__Win32Release.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\bin\GLWorld__Win32Release.lib" /MACHINE:X86 "c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld.res"
+         "c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld.obj"
+         "c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\stdafx.obj"
+         Generating code
+         Finished generating code
+         GLWorld.vcxproj -> c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\bin\GLWorld__Win32Release.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\bin\GLWorld__Win32Release.exe;#1" /manifest "c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld__Win32Release.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         Deleting file "c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld.unsuccessfulbuild".
+         Touching "c:\users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\build/Win32Release\GLWorld.lastbuildstate".
+     1>Done Building Project "c:\Users\marc.zaku\documents\visual studio 2010\Projects\GLWorld\GLWorld\GLWorld.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.36

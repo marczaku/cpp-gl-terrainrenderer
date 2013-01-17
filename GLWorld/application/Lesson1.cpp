@@ -4,6 +4,7 @@
 #include <math.h>
 #include "screen_interface.h"
 #include "Landscape.h"
+#include "Landscape4Tex.h"
 #include "utility_functions.h"
 #include "DominantDirectionalLight.h"
 
@@ -16,8 +17,9 @@ long long currentTime;
 double secondsPerCount;
 double deltaTime;
 
+GLint	g_hW1,g_hW2,g_hW3,g_hW4;
 GLint g_hDominantLightDirection;
-Landscape* g_Landscape;
+Landscape4Tex* g_Landscape;
 DominantDirectionalLight* g_DominantDirectionalLight;
 matrix g;
 LPPOINT g_OldPoint;
@@ -74,83 +76,86 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	gluPerspective( 70, GLdouble( x_res ) / y_res, 0.01, 10000.0 );
-	
-	
-	{
-		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
-		picture surface( "D://surface.bmp" );
-
+	{	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		picture surface( "D://tex0.bmp" );
 		GLuint texture_id;
 		glActiveTexture(GL_TEXTURE0);
 		glGenTextures( 1, &texture_id );
 		glBindTexture( GL_TEXTURE_2D, texture_id );
-
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, surface.xsize, surface.ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.content );
-	
-	}
-
-	{
-		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-		picture surface( "D://surface2.bmp" );
-
+		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, surface.xsize, surface.ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.content );}
+	{	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		picture surface( "D://tex1.bmp" );
 		GLuint texture_id;
 		glActiveTexture(GL_TEXTURE1);
 		glGenTextures( 1, &texture_id );
 		glBindTexture( GL_TEXTURE_2D, texture_id );
-
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, surface.xsize, surface.ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.content );
-	}
-
-	{
-		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-		picture surface( "D://weightmap.bmp" );
-
+		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, surface.xsize, surface.ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.content );}
+	{	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		picture surface( "D://tex2.bmp" );
 		GLuint texture_id;
 		glActiveTexture(GL_TEXTURE2);
 		glGenTextures( 1, &texture_id );
 		glBindTexture( GL_TEXTURE_2D, texture_id );
-
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-
-		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, surface.xsize, surface.ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.content );
-	}
-
+		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, surface.xsize, surface.ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.content );}
+	{	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		picture surface( "D://tex3.bmp" );
+		GLuint texture_id;
+		glActiveTexture(GL_TEXTURE3);
+		glGenTextures( 1, &texture_id );
+		glBindTexture( GL_TEXTURE_2D, texture_id );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, surface.xsize, surface.ysize, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.content );}
+	
 	GLuint prog=load_program("D://program2.vert","D://program2.frag");
 	glUseProgram(prog);
 
-	
-	GLint texture_location = glGetUniformLocation( prog, "surface_texture" );
-    if( texture_location == -1 ) exit_error( "Variable 'surface_texture' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+	GLint texture_location = glGetUniformLocation( prog, "tex1" );
+    if( texture_location == -1 ) exit_error( "Variable konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
     glUniform1i( texture_location, 0 );
+	texture_location = glGetUniformLocation( prog, "tex2" );
+    if( texture_location == -1 ) exit_error( "Variable konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+    glUniform1i( texture_location, 1 );
+	texture_location = glGetUniformLocation( prog, "tex3" );
+    if( texture_location == -1 ) exit_error( "Variable konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+    glUniform1i( texture_location, 2 );
+	texture_location = glGetUniformLocation( prog, "tex4" );
+    if( texture_location == -1 ) exit_error( "Variable konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+    glUniform1i( texture_location, 3 );
+
+	//load_gl_texture("D://tex0.bmp",GL_TEXTURE0,"tex1",prog);
+	//load_gl_texture("D://tex1.bmp",GL_TEXTURE1,"tex2",prog);
+	//load_gl_texture("D://tex2.bmp",GL_TEXTURE2,"tex3",prog);
+	//load_gl_texture("D://tex3.bmp",GL_TEXTURE3,"tex4",prog);
 
 	g_hDominantLightDirection = glGetUniformLocation( prog, "DominantLightDirection" );
-    if( g_hDominantLightDirection == -1 ) exit_error( "Variable 'DominantLightDirection' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+    //if( g_hDominantLightDirection == -1 ) exit_error( "Variable 'DominantLightDirection' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
     glUniform3f( g_hTime, 0, 0, 0 );
-	
-	/*
-	texture_location = glGetUniformLocation( prog, "surface_texture2" );
-    if( texture_location == -1 ) exit_error( "Variable 'surface_texture2' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
-    glUniform1i( texture_location, 1 );
 
-	texture_location = glGetUniformLocation( prog, "weight_texture" );
-    if( texture_location == -1 ) exit_error( "Variable 'weight_texture' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
-    glUniform1i( texture_location, 2 );
+	g_hW1 = glGetAttribLocation( prog, "w1" );
+    if( g_hW1 == -1 ) exit_error( "Variable 'DominantLightDirection' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+    glVertexAttrib1f( g_hW1, 0);
 
-	g_hTime = glGetUniformLocation( prog, "time" );
-    if( g_hTime == -1 ) exit_error( "Variable 'time' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
-    glUniform1f( g_hTime, 0 );*/
+	g_hW2 = glGetAttribLocation( prog, "w2" );
+    if( g_hW2 == -1 ) exit_error( "Variable 'DominantLightDirection' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+    glVertexAttrib1f( g_hW2, 0);
 
-	g_Landscape = new Landscape(257,257,"D://Heightmap.bmp");
+	g_hW3 = glGetAttribLocation( prog, "w3" );
+    if( g_hW3 == -1 ) exit_error( "Variable 'DominantLightDirection' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+    glVertexAttrib1f( g_hW3, 0);
+
+	g_hW4 = glGetAttribLocation( prog, "w4" );
+    if( g_hW4 == -1 ) exit_error( "Variable 'DominantLightDirection' konnte im aktuellen Unterprogramm nicht erfasst werden.\n" );
+    glVertexAttrib1f( g_hW4, 0);
+
+	g_Landscape = new Landscape4Tex(257,257,"D://height_map.bmp");
 	g_DominantDirectionalLight= new DominantDirectionalLight();
 	g_DominantDirectionalLight->m_Position=vertex(0,10,0);
 	g_DominantDirectionalLight->m_Direction=vector(0,-1,0);
@@ -176,7 +181,7 @@ int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 	double	deltaTime;
 
 	{
-		long CountsPerSecond=0;
+		long long CountsPerSecond=0;
 		QueryPerformanceCounter((LARGE_INTEGER*)&previousTime);
 		QueryPerformanceFrequency((LARGE_INTEGER*)&CountsPerSecond); 
 		secondsPerCount = 1.0 / (double)CountsPerSecond;
@@ -228,9 +233,9 @@ int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 			yDelta=0;
 
 			if(!keys[VK_SHIFT])
-				g_MaxVelocity=vector(0.02,0.02,0.02);
+				g_MaxVelocity=vector(0.01,0.01,0.01);
 			else
-				g_MaxVelocity=vector(0.1,0.1,0.1);
+				g_MaxVelocity=vector(0.05,0.05,0.05);
 
 			g_Acceleration=vector(0,0,0);
 

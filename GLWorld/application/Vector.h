@@ -28,6 +28,12 @@ inline vector Cross (const vector& a, const vector& b)
 		a.wx*b.wy-a.wy*b.wx);
 }
 
+inline float Dot (const vector& a, const vector& b)
+{
+	return 
+		a.wx*b.wx+a.wy*b.wy+a.wz*b.wz;
+}
+
 inline vector Normal (const vector& a)
 {
 	double length=sqrt(a.wx*a.wx+a.wy*a.wy+a.wz*a.wz);
