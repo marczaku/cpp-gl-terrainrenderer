@@ -2,12 +2,15 @@
 
 #pragma once
 #include "stdafx.h"
+#include <functional>
 
 #define MAX_LOADSTRING 100
 
+LRESULT DefWndProc(HWND, UINT, WPARAM, LPARAM);
+
 class Window
 {
-private:
+protected:
 	HINSTANCE	m_hInst;
 	HWND		m_hWnd;
 	TCHAR		m_szTitle[MAX_LOADSTRING];
@@ -16,26 +19,23 @@ private:
 	DWORD		m_Styles;
 	bool		m_bRegistered;
 	bool		m_bCreated;
+	typedef std::tr1::function<LRESULT (HWND, UINT, WPARAM, LPARAM)> WndProcFunction;
+	WndProcFunction m_WNdProcFunction;
 
 public:
-	static LRESULT CALLBACK	stWndProc(HWND, UINT, WPARAM, LPARAM);
-	LRESULT CALLBACK		WndProc(HWND, UINT, WPARAM, LPARAM);
-	static INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
-
 	Window(HINSTANCE hInstance, const WNDCLASSEX* wcx = NULL, const RECT* Dimensions = NULL, bool bDisplay=false);
-	bool RegisterWindow();
-	bool Create();
+	~Window();
 
-	inline static Window* GetObjectFromWindow(HWND hWnd)
-	{
-		return (Window*)GetWindowLong(hWnd, GWL_USERDATA);
-	}
+	bool					RegisterWindow();
+	virtual bool			Create();
+	bool					Show(const bool p_bDisplay=true);
 
-	void SetWindowTitle(char* lpszTitle) 
-	{
-		ZeroMemory(m_szTitle, sizeof(char)*MAX_LOADSTRING);
-		strcpy_s(m_szTitle, lpszTitle);
-	}
+	inline static Window*	GetObjectFromWindow(HWND hWnd){ return (Window*)GetWindowLong(hWnd, GWL_USERDATA);}
+	inline HWND				GetHandle() { return m_hWnd;}
 
-	bool Window::Show(const bool p_bDisplay=true);
+	void SetWindowTitle(char* lpszTitle);
+	void SetWndProcFunction(WndProcFunction ProcFunction);
+
+protected:
+	static LRESULT CALLBACK	stWndProc(HWND, UINT, WPARAM, LPARAM);
 };

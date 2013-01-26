@@ -7,6 +7,7 @@
 
 Window::Window(HINSTANCE hInstance, const WNDCLASSEX* wcx, const RECT* Dimensions, bool bDisplay)
 {
+	m_hWnd = NULL;
 	m_bRegistered=false;
 	m_bCreated=false;
 
@@ -48,16 +49,35 @@ Window::Window(HINSTANCE hInstance, const WNDCLASSEX* wcx, const RECT* Dimension
 	}
 
 	m_Styles = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
-}
 
+	m_WNdProcFunction = DefWndProc;
+}
+//---------------------------------------------------
+Window::~Window()
+{
+	if (m_bCreated)
+	{
+		DestroyWindow(m_hWnd);
+		m_hWnd=0;
+		m_bCreated=false;
+	}
+	if(m_bRegistered)
+	{
+		UnregisterClass(m_wcx.lpszClassName,m_hInst);
+		m_bRegistered=false;
+	}
+}
+//---------------------------------------------------
 bool Window::RegisterWindow()
 {
 	m_bRegistered=(!(RegisterClassEx(&m_wcx) == 0));
 	return m_bRegistered;
 }
-
+//---------------------------------------------------
 bool Window::Create()
 {
+	m_hWnd = NULL;
+
 	// send the this pointer as the window creation parameter
 	m_hWnd = CreateWindow(m_wcx.lpszClassName, m_szTitle, m_Styles, m_Dimensions.left, m_Dimensions.top, 
 		m_Dimensions.right - m_Dimensions.left, m_Dimensions.bottom - m_Dimensions.top, NULL, NULL, m_hInst, 
@@ -67,7 +87,7 @@ bool Window::Create()
 
 	return m_bCreated;
 }
-
+//---------------------------------------------------
 bool Window::Show(const bool p_bDisplay)
 {
 	if(!m_bRegistered && !RegisterWindow())
@@ -80,39 +100,34 @@ bool Window::Show(const bool p_bDisplay)
 
 	return true;
 }
-
+//---------------------------------------------------
+void Window::SetWindowTitle(char* lpszTitle) 
+{
+	ZeroMemory(m_szTitle, sizeof(char)*MAX_LOADSTRING);
+	strcpy_s(m_szTitle, lpszTitle);
+}
+//---------------------------------------------------
+void Window::SetWndProcFunction(WndProcFunction ProcFunction)
+{
+	m_WNdProcFunction = ProcFunction;
+}
+//---------------------------------------------------
 LRESULT CALLBACK Window::stWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	Window* pWnd;
 
 	if (uMsg == WM_NCCREATE)
-	{
-		// get the pointer to the window from lpCreateParams which was set in CreateWindow
 		SetWindowLong(hWnd, GWL_USERDATA, (long)((LPCREATESTRUCT(lParam))->lpCreateParams));
-	}
 
-	// get the pointer to the window
 	pWnd = GetObjectFromWindow(hWnd);
 
-	// if we have the pointer, go to the message handler of the window
-	// else, use DefWindowProc
 	if (pWnd)
-		return pWnd->WndProc(hWnd, uMsg, wParam, lParam);
+		return pWnd->m_WNdProcFunction(hWnd, uMsg, wParam, lParam);
 	else
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
-
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND	- process the application menu
-//  WM_PAINT	- Paint the main window
-//  WM_DESTROY	- post a quit message and return
-//
-//
-LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+//---------------------------------------------------
+LRESULT DefWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
@@ -127,7 +142,7 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		switch (wmId)
 		{
 		case IDM_ABOUT:
-			DialogBox(m_hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+			//DialogBox(m_hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
@@ -138,7 +153,6 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		// TODO: Add any drawing code here...
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
@@ -147,25 +161,6 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
+
 	return 0;
-}
-
-// Message handler for about box.
-INT_PTR CALLBACK Window::About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)true;
-
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)true;
-		}
-		break;
-	}
-	return (INT_PTR)false;
 }
