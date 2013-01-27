@@ -6,8 +6,6 @@
 
 #define MAX_LOADSTRING 100
 
-LRESULT DefWndProc(HWND, UINT, WPARAM, LPARAM);
-
 class Window
 {
 protected:
@@ -19,8 +17,9 @@ protected:
 	DWORD		m_Styles;
 	bool		m_bRegistered;
 	bool		m_bCreated;
-	typedef std::tr1::function<LRESULT (HWND, UINT, WPARAM, LPARAM)> WndProcFunction;
-	WndProcFunction m_WNdProcFunction;
+	void*		m_WndProcOwner;
+	typedef std::tr1::function<LRESULT (HWND, UINT, WPARAM, LPARAM, void*)> WndProcFunction;
+	WndProcFunction m_WndProcFunction;
 
 public:
 	Window(HINSTANCE hInstance, const WNDCLASSEX* wcx = NULL, const RECT* Dimensions = NULL, bool bDisplay=false);
@@ -34,7 +33,7 @@ public:
 	inline HWND				GetHandle() { return m_hWnd;}
 
 	void SetWindowTitle(char* lpszTitle);
-	void SetWndProcFunction(WndProcFunction ProcFunction);
+	void SetWndProcFunction(WndProcFunction ProcFunction, void* WndProcOwner=0);
 
 protected:
 	static LRESULT CALLBACK	stWndProc(HWND, UINT, WPARAM, LPARAM);

@@ -49,8 +49,6 @@ Window::Window(HINSTANCE hInstance, const WNDCLASSEX* wcx, const RECT* Dimension
 	}
 
 	m_Styles = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
-
-	m_WNdProcFunction = DefWndProc;
 }
 //---------------------------------------------------
 Window::~Window()
@@ -107,9 +105,10 @@ void Window::SetWindowTitle(char* lpszTitle)
 	strcpy_s(m_szTitle, lpszTitle);
 }
 //---------------------------------------------------
-void Window::SetWndProcFunction(WndProcFunction ProcFunction)
+void Window::SetWndProcFunction(WndProcFunction ProcFunction, void* WndProcOwner)
 {
-	m_WNdProcFunction = ProcFunction;
+	m_WndProcOwner = WndProcOwner;
+	m_WndProcFunction = ProcFunction;
 }
 //---------------------------------------------------
 LRESULT CALLBACK Window::stWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -122,45 +121,7 @@ LRESULT CALLBACK Window::stWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 	pWnd = GetObjectFromWindow(hWnd);
 
 	if (pWnd)
-		return pWnd->m_WNdProcFunction(hWnd, uMsg, wParam, lParam);
+		return pWnd->m_WndProcFunction(hWnd, uMsg, wParam, lParam, pWnd->m_WndProcOwner);
 	else
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);
-}
-//---------------------------------------------------
-LRESULT DefWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	int wmId, wmEvent;
-	PAINTSTRUCT ps;
-	HDC hdc;
-
-	switch (message)
-	{
-	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
-		wmEvent = HIWORD(wParam);
-		// Parse the menu selections:
-		switch (wmId)
-		{
-		case IDM_ABOUT:
-			//DialogBox(m_hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-			break;
-		case IDM_EXIT:
-			DestroyWindow(hWnd);
-			break;
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-		break;
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		EndPaint(hWnd, &ps);
-		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	}
-
-	return 0;
 }

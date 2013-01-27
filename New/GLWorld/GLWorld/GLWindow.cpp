@@ -7,7 +7,7 @@ GLWindow::GLWindow(HINSTANCE hInstance, const WNDCLASSEX* wcx, const RECT* Dimen
 {
 
 }
-
+//---------------------------------------------------
 bool GLWindow::Create()
 {
 	if(!Window::Create())
@@ -41,13 +41,17 @@ bool GLWindow::Create()
 	if(!(wglMakeCurrent(m_hDC,m_hRC))){ return false;}
 	return true;
 }
-
+//---------------------------------------------------
 void GLWindow::Clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+//---------------------------------------------------
+void GLWindow::Swap()
+{
 	SwapBuffers(m_hDC);
 }
-
+//---------------------------------------------------
 GLWindow::~GLWindow()
 {
 	if (m_hRC)

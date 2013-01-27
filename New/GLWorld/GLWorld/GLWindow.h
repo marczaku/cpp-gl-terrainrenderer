@@ -14,9 +14,9 @@ private:
 	GLuint		m_PixelFormat;
 
 public:
-
 	GLWindow(HINSTANCE hInstance, const WNDCLASSEX* wcx = NULL, const RECT* Dimensions = NULL, bool bDisplay=false);
 	~GLWindow();
 	virtual bool Create();
 	void Clear();
+	void Swap();
 };
