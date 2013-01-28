@@ -27,7 +27,7 @@ inline Vector Cross (const Vector& a, const Vector& b)
 		a.x*b.y-a.y*b.x);
 }
 
-inline float Dot (const Vector& a, const Vector& b)
+inline double Dot (const Vector& a, const Vector& b)
 {
 	return 
 		a.x*b.x+a.y*b.y+a.z*b.z;

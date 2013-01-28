@@ -5,8 +5,11 @@
 Application::Application(HINSTANCE hInstance)
 {
 	ZeroMemory(m_Keys,sizeof(bool)*256);
-	m_Position = Vector(0.0f,0.0f,-30.0f);
-	m_Velocity = Vector(0.0f,0.0f,0.0f);
+	m_Position = Vector(0.0,0.0,-30.0);
+	m_Rotation = Vector(-63.0,0.0,-23.0);
+	m_Velocity = Vector(0.0,0.0,0.0);
+	m_RotVelocity = Vector(0.0,0.0,0.0);
+	m_pInputManager = new InputManager();
 	m_pWindow = new GLWindow(hInstance);
 	m_pWindow->SetWndProcFunction(StWndProc, (void*)this);
 	m_pWindow->Show();
@@ -15,55 +18,31 @@ Application::Application(HINSTANCE hInstance)
 Application::~Application()
 {
 	delete m_pWindow;
-}
-//---------------------------------------------------
-GLvoid ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize The GL Window
-{
-	glViewport(0,0,width,height);						// Reset The Current Viewport
-
-	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-	glLoadIdentity();									// Reset The Projection Matrix
-
-	// Calculate The Aspect Ratio Of The Window
-	gluPerspective(45.0f,(GLfloat)width/(GLfloat)height,0.01f,1000.0f);
-
-	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-	glLoadIdentity();									// Reset The Modelview Matrix
+	delete m_pInputManager;
 }
 //---------------------------------------------------
 void Application::Init()
 {
 	glewInit();
-	ReSizeGLScene(800,600);
-	/*
-	glViewport(0,0,800,600);
-	glMatrixMode( GL_MODELVIEW );
-	glClearColor(0.5f,0.5f,0.5f,1.0f);
-	glLoadIdentity();
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-	gluPerspective( 70, GLdouble( 800 ) / 600, 0.01, 10000.0 );*/
-	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
-	glClearDepth(1.0f);									// Depth Buffer Setup
-	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+	m_pLandscape = new Landscape(10,10);
 }
 //---------------------------------------------------
 void Application::Update(double DeltaTime)
 {
-	m_Velocity=Vector(0.0f,0.0f,0.0f);
-	m_RotVelocity=Vector(0.0f,0.0f,0.0f);
-	if(m_Keys['W']) m_Velocity.z+= 0.01f;
-	if(m_Keys['S']) m_Velocity.z-= 0.01f;
-	if(m_Keys['A']) m_Velocity.x+= 0.01f;
-	if(m_Keys['D']) m_Velocity.x-= 0.01f;
-	if(m_Keys['J']) m_RotVelocity.x+= 0.01f;
-	if(m_Keys['U']) m_RotVelocity.x-= 0.01f;
-	if(m_Keys['H']) m_RotVelocity.z+= 0.01f;
-	if(m_Keys['K']) m_RotVelocity.z-= 0.01f;
-	m_Rotation+=m_RotVelocity*DeltaTime;
+	m_pInputManager->Update(DeltaTime);
+
+	m_Velocity.z=m_pInputManager->m_aForward*0.01;
+	m_Velocity.x=m_pInputManager->m_aStrafe*-0.01;
+
+	m_Rotation.x+=m_pInputManager->m_MouseDeltaY*0.1;
+	m_Rotation.z+=m_pInputManager->m_MouseDeltaX*0.1;
+
+	m_pInputManager->m_MouseDeltaX=0.0f;
+	m_pInputManager->m_MouseDeltaY=0.0f;
+
 	m_Position+=m_Velocity*DeltaTime;
 }
 //---------------------------------------------------
@@ -79,10 +58,10 @@ void DrawGrid()
 			glLineWidth(2);
 			glBegin(GL_LINES);
 		}
-		glVertex3f(1.0f*i,-10.0f,0.0f);
-		glVertex3f(1.0f*i, 10.0f,0.0f);
-		glVertex3f(-10.0f,1.0f*i,0.0f);
-		glVertex3f( 10.0f,1.0f*i,0.0f);
+		glVertex3f(1.0*i,-10.0,0.0);
+		glVertex3f(1.0*i, 10.0,0.0);
+		glVertex3f(-10.0,1.0*i,0.0);
+		glVertex3f( 10.0,1.0*i,0.0);
 		if(i==0)
 		{
 			glEnd();
@@ -90,6 +69,9 @@ void DrawGrid()
 			glBegin(GL_LINES);
 		}
 	}
+
+	glVertex3f(.0,0.0,0.0);
+	glVertex3f( 0.0,0.0,10.0);
 	glEnd();
 }
 //---------------------------------------------------
@@ -98,10 +80,11 @@ void Application::Draw()
 	m_pWindow->Clear();
 	glLoadIdentity();
 	glTranslatef(m_Position.x,m_Position.y,m_Position.z);
-	glRotatef(m_Rotation.x,1.0f,0.0f,0.0f);
-	glRotatef(m_Rotation.y,0.0f,1.0f,0.0f);
-	glRotatef(m_Rotation.z,0.0f,0.0f,1.0f);
-	DrawGrid();
+	glRotatef(m_Rotation.x,1.0,0.0,0.0);
+	glRotatef(m_Rotation.y,0.0,1.0,0.0);
+	glRotatef(m_Rotation.z,0.0,0.0,1.0);
+	//DrawGrid();
+	m_pLandscape->Draw();
 	glEnd();
 	m_pWindow->Swap();
 }
@@ -143,38 +126,22 @@ LRESULT CALLBACK Application::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 		PostQuitMessage(0);
 		return 0;
 	case WM_KEYDOWN:
-		m_Keys[wParam] = true;
+		m_pInputManager->KeyDown(wParam);
 		KeyDown(wParam);
 		return 0;
 	case WM_KEYUP:
-		m_Keys[wParam] = false;
+		m_pInputManager->KeyUp(wParam);
 		KeyUp(wParam);
 		return 0;
 	case WM_LBUTTONUP:
-		//bCaptureModeOn=false;
+		m_pInputManager->MouseLeftUp();
 		return 0;
 	case WM_MOUSEMOVE:
 		if(wParam==MK_LBUTTON)
-		{
-			//if(!bCaptureModeOn)
-			//{
-			//bCaptureModeOn=true;
-			//xOldPos = LOWORD(lParam); 
-			//yOldPos = HIWORD(lParam);
-			//}
-			//else
-			//{
-			//xPos = LOWORD(lParam); 
-			//yPos = HIWORD(lParam);
-			//xDelta=xPos-xOldPos;
-			//yDelta=yPos-yOldPos;
-			//xOldPos=xPos;
-			//yOldPos=yPos;
-			//}
-		}
+			m_pInputManager->SetMousePos(LOWORD(lParam),HIWORD(lParam));
 		return 0;
 	case WM_SIZE:
-		ReSizeGLScene(LOWORD(lParam),HIWORD(lParam));  // LoWord=Width, HiWord=Height
+		m_pWindow->OnResize(LOWORD(lParam),HIWORD(lParam));  // LoWord=Width, HiWord=Height
 		return 0;
 	}
 

@@ -19,4 +19,6 @@ public:
 	virtual bool Create();
 	void Clear();
 	void Swap();
+	void OnResize(int NewWidth, int NewHeight);
+private:
 };

@@ -8,6 +8,18 @@ GLWindow::GLWindow(HINSTANCE hInstance, const WNDCLASSEX* wcx, const RECT* Dimen
 
 }
 //---------------------------------------------------
+GLWindow::~GLWindow()
+{
+	if (m_hRC)
+	{
+		wglMakeCurrent(NULL,NULL);
+		wglDeleteContext(m_hRC);
+		m_hRC=NULL;
+	}
+	if (m_hDC)
+		ReleaseDC(m_hWnd,m_hDC);
+}
+//---------------------------------------------------
 bool GLWindow::Create()
 {
 	if(!Window::Create())
@@ -39,6 +51,7 @@ bool GLWindow::Create()
 	if(!(SetPixelFormat(m_hDC,m_PixelFormat,&pfd))){ return false;}
 	if(!(m_hRC=wglCreateContext(m_hDC))){ return false;}
 	if(!(wglMakeCurrent(m_hDC,m_hRC))){ return false;}
+	OnResize(800,600);
 	return true;
 }
 //---------------------------------------------------
@@ -52,14 +65,12 @@ void GLWindow::Swap()
 	SwapBuffers(m_hDC);
 }
 //---------------------------------------------------
-GLWindow::~GLWindow()
+void GLWindow::OnResize(int NewWidth, int NewHeight)
 {
-	if (m_hRC)
-	{
-		wglMakeCurrent(NULL,NULL);
-		wglDeleteContext(m_hRC);
-		m_hRC=NULL;
-	}
-	if (m_hDC)
-		ReleaseDC(m_hWnd,m_hDC);
+	glViewport(0,0,NewWidth,NewHeight);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45.0f,(GLfloat)NewWidth/(GLfloat)NewHeight,0.01f,1000.0f);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
